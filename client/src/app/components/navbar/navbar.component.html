@@ -1,0 +1,14 @@
+<nav>
+    <a mat-button>
+        Movie Party
+    </a>
+    <a mat-button routerLink="list">
+        List
+    </a>
+    <a mat-button>
+        <div class="upload-file-button" (click)="onAddClick()">
+            <mat-icon aria-hidden="false" aria-label="add-icon">add</mat-icon> Upload
+        </div>
+        <input type="file" name="video-file" id="movie-file" encrypt="multipart/form-data" (change)="onFileUpload($event)">
+    </a>
+</nav>

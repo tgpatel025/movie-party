@@ -1,0 +1,42 @@
+const createAudio = 'C:/Data/Uploads/ffmpeg -i input_filename -vn -acodec libvorbis -ab 128k -dash 1 filename_audio.webm';
+const createVideos = 'C:/Data/Uploads/ffmpeg -i input_filename -c:v libvpx-vp9 -keyint_min 150 -g 150 -tile-columns 4 -frame-parallel 1  -f webm -dash 1 -an -vf scale=160:90 -b:v 250k -dash 1 filename_160x90_250k.webm -an -vf scale=320:180 -b:v 500k -dash 1 filename_320x180_500k.webm -an -vf scale=640:360 -b:v 750k -dash 1 filename_640x360_750k.webm -an -vf scale=640:360 -b:v 1000k -dash 1 filename_640x360_1000k.webm -an -vf scale=1280:720 -b:v 1500k -dash 1 filename_1280x720_1500k.webm';
+const generateManifestFile = 'C:/Data/Uploads/ffmpeg -f webm_dash_manifest -i filename_160x90_250k.webm -f webm_dash_manifest -i filename_320x180_500k.webm -f webm_dash_manifest -i filename_640x360_750k.webm -f webm_dash_manifest -i filename_1280x720_1500k.webm -f webm_dash_manifest -i filename_audio.webm -c copy -map 0 -map 1 -map 2 -map 3 -map 4 -f webm_dash_manifest -adaptation_sets "id=0,streams=0,1,2,3 id=1,streams=4" filename.mpd'
+
+exec(createAudio.replace('input_filename', `${folder}/${videoId}${ext}`).replace(/filename/g, `${folder}/${videoId}`), () => {
+  exec(createVideos.replace('input_filename', `${folder}/${videoId}${ext}`).replace(/filename/g, `${folder}/${videoId}`), () => {
+    exec(generateManifestFile.replace(/filename/g, `${folder}/${videoId}`), () => {
+      res.status(200).json({ status: "Done..!", percentage });
+    });
+  });
+});
+
+router.get('/get/:id', (req, res) => {
+  const videoPath = `C:/Data/Uploads/${req.params.id}/${req.params.id}.mp4`;
+  const videoStat = fs.statSync(videoPath);
+  const fileSize = videoStat.size;
+  const videoRange = req.headers.range;
+  if (videoRange) {
+    const parts = videoRange.replace(/bytes=/, "").split("-");
+    const start = parseInt(parts[0], 10);
+    const end = parts[1]
+      ? parseInt(parts[1], 10)
+      : fileSize - 1;
+    const chunksize = (end - start) + 1;
+    const file = fs.createReadStream(videoPath, { start, end });
+    const head = {
+      'Content-Range': `bytes ${start}-${end}/${fileSize}`,
+      'Accept-Ranges': 'bytes',
+      'Content-Length': chunksize,
+      'Content-Type': 'video/mp4',
+    };
+    res.writeHead(206, head);
+    file.pipe(res);
+  } else {
+    const head = {
+      'Content-Length': fileSize,
+      'Content-Type': 'video/mp4',
+    };
+    res.writeHead(200, head);
+    fs.createReadStream(videoPath).pipe(res);
+  }
+});

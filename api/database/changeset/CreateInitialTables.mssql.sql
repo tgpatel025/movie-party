@@ -1,0 +1,56 @@
+CREATE TABLE UserConnectionMapping (
+    UserId UNIQUEIDENTIFIER NOT NULL,
+    ConnectionId UNIQUEIDENTIFIER NOT NULL,
+    IsLive BIT NOT NULL
+)
+GO
+
+CREATE TABLE User (
+    Id INT IDENTITY(1, 1) NOT NULL PRIMARY KEY,
+    Guid UNIQUEIDENTIFIER NOT NULL,
+    FullName NVARCHAR(100) NOT NULL,
+    UserName NVARCHAR(100) NOT NULL,
+    Password BINARY(64) NOT NULL,
+    CreatedOn DATETIME NOT NULL,
+    ModifiedOn DATETIME NOT NULL,
+    IsDeleted BIT NOT NULL
+)
+GO
+
+CREATE TABLE Video (
+    Id INT IDENTITY(1, 1) NOT NULL PRIMARY KEY,
+    Guid UNIQUEIDENTIFIER NOT NULL,
+    FileName NVARCHAR(250) NOT NULL,
+    Size NVARCHAR(255) NOT NULL,
+    CreatedOn DATETIME NOT NULL,
+    ModifiedOn DATETIME NOT NULL,
+    CreatedBy UNIQUEIDENTIFIER NULL,
+    ModifiedBy UNIQUEIDENTIFIER NULL,
+    IsDeleted BIT NOT NULL,
+    Status INT NOT NULL
+)
+GO
+
+CREATE TABLE Party (
+    Id INT IDENTITY(1, 1) NOT NULL PRIMARY KEY,
+    Guid UNIQUEIDENTIFIER NOT NULL,
+    CreatedOn DATETIME NOT NULL,
+    ModifiedOn DATETIME NOT NULL,
+    CreatedBy INT NOT NULL,
+    IsDeleted BIT NOT NULL,
+    IsControlledByAdmin BIT NOT NULL
+)
+GO
+
+CREATE TABLE UserPartyMapping (
+    PartyId INT NOT NULL,
+    UserId INT NOT NULL,
+    IsDeleted BIT
+)
+GO
+
+CREATE TABLE UserFriendMapping (
+    UserId INT NOT NULL,
+    FriendUserId INT NOT NULL
+)
+GO

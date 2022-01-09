@@ -1,0 +1,41 @@
+CREATE LOGIN [MovieParty_ReadSP] WITH PASSWORD=N'M0v1Ep4RtyR3ad', DEFAULT_DATABASE=[master], DEFAULT_LANGUAGE=[us_english], CHECK_EXPIRATION=OFF, CHECK_POLICY=OFF
+GO
+
+CREATE LOGIN [MovieParty_WriteSP] WITH PASSWORD=N'M0v1Ep4RtyWr1t3', DEFAULT_DATABASE=[master], DEFAULT_LANGUAGE=[us_english], CHECK_EXPIRATION=OFF, CHECK_POLICY=OFF
+GO
+
+USE [MovieParty]
+GO
+
+DROP USER IF EXISTS [MovieParty_ReadSP]
+GO
+
+CREATE USER [MovieParty_ReadSP] FOR LOGIN [MovieParty_ReadSP] WITH DEFAULT_SCHEMA=[dbo]
+GO
+
+DROP USER IF EXISTS [MovieParty_WriteSP]
+GO
+		
+CREATE USER [MovieParty_WriteSP] FOR LOGIN [MovieParty_WriteSP] WITH DEFAULT_SCHEMA=[dbo]
+GO
+
+ALTER ROLE db_datareader ADD MEMBER [MovieParty_ReadSP]
+GO
+
+ALTER ROLE db_datareader ADD MEMBER [MovieParty_WriteSP]
+GO
+		
+ALTER ROLE db_datawriter ADD MEMBER [MovieParty_WriteSP]
+GO
+
+--CREATE SCHEMA ReadSP;
+--GO
+
+--CREATE SCHEMA WriteSP;
+--GO
+
+GRANT EXECUTE ON SCHEMA :: ReadSP TO [MovieParty_ReadSP];
+GO
+
+GRANT EXECUTE ON SCHEMA :: WriteSP TO [MovieParty_WriteSP];
+GO

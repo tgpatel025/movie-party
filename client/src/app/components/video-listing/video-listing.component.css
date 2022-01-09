@@ -1,0 +1,21 @@
+table {
+    width: 100%;
+}
+.status-div {
+    display: flex;
+}
+.status-text {
+    padding-left: 12px;
+}
+.mat-icon {
+    cursor: pointer;
+}
+.edit-icon {
+    padding-right: 12px;
+}
+a {
+    text-decoration: none;
+    font-weight: 600;
+    cursor: pointer;
+    color: #3f51b5;
+}
